@@ -86,8 +86,8 @@ export function renderText(report: ReportEnvelope, options: { verbose?: boolean 
         lines.push(`      ${evidence.label}: ${evidence.value}`);
       }
       if (finding.remediation) {
-        lines.push("      fix:");
-        lines.push(...wrap(finding.remediation));
+        // One wrapped line starting with `fix:` keeps the hint aligned with evidence and docs.
+        lines.push(...wrap(`fix: ${finding.remediation}`, 88, "      "));
       }
       if (finding.docsUrl) lines.push(`      docs: ${finding.docsUrl}`);
     }

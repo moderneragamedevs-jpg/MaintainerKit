@@ -63,6 +63,9 @@ Keep changes under roughly 300 changed lines. Split unrelated work into separate
    major version.
 8. **Security defaults.** New write paths require a gate, an audit event, and documentation before
    merge. See [docs/SECURITY_MODEL.md](docs/SECURITY_MODEL.md).
+9. **Commit the Action bundle.** Changing Action source means rebuilding
+   `packages/interfaces/github-action/dist/index.cjs` and committing it in the same pull request. CI fails
+   when the committed bundle is stale.
 
 ## Tests
 

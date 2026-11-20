@@ -33,8 +33,19 @@ ContribSpec change.
 - **Audit trail**: structured events, JSONL sink, in-memory sink, storage seam for future persistence,
   and central secret redaction applied to every output artifact.
 - **SDK**: `MaintainerKit` facade plus re-exported stable contracts for building on the platform.
-- **Quality gates**: 300+ tests (unit, provider contract, mocked GitHub, architecture, security,
+- **Documentation**: product spec, architecture, security model, ContribSpec field reference, policy-rule
+  reference, audit-check reference, CLI reference, report contract, AI guide, GitHub integration guide,
+  development guide, implementation status, and four ADRs — plus runnable `examples/` (minimal, strict,
+  local-AI, SDK) that are validated in the test suite.
+- **Quality gates**: 350+ tests (unit, provider contract, mocked GitHub, architecture, security,
   end-to-end), dependency-direction tests, and reproducible builds.
+
+### Fixed
+
+- Text reports now print the remediation hint as a single indented line aligned with evidence and docs
+  (`      fix: …`) instead of an unindented continuation block.
+- The Action bundle is CommonJS (`dist/index.cjs`) so dependencies that `require()` Node built-ins work on
+  a runner; CI fails if the committed bundle is stale.
 
 ### Security
 

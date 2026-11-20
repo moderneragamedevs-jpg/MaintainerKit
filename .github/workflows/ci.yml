@@ -37,6 +37,13 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Action bundle is current
+        run: |
+          if ! git diff --quiet -- packages/interfaces/github-action/dist/index.cjs; then
+            echo "::error file=packages/interfaces/github-action/dist/index.cjs::The bundled Action is stale. Run 'pnpm --filter @maintainerkit/github-action run build' and commit the result."
+            exit 1
+          fi
+
       - name: Typecheck
         run: pnpm typecheck
 

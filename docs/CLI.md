@@ -130,8 +130,12 @@ maintainerkit explain exit-codes            # exit code table
 maintainerkit explain reports               # report contract
 maintainerkit explain ai                    # AI guarantees
 maintainerkit explain security              # security boundaries
-maintainerkit explain --input report.json --finding MK-PR-001:pr-42
+maintainerkit explain --input report.json --finding 'MK-REPO-001:repository#1'
 ```
+
+Finding ids come from the report itself (`findings[].id`). A repository-level rule evaluated against a local
+path yields ids like `MK-REPO-001:repository#1`; a pull-request rule yields `MK-PR-001:pr-42`. If an id is
+wrong, `explain` lists the ids that do exist instead of failing silently.
 
 This is how a user answers "why did this fail?" without reading source code.
 
@@ -171,6 +175,8 @@ maintainerkit report --input maintainerkit-report.json --format markdown
 ```bash
 maintainerkit explain --input maintainerkit-report.json --finding 'MK-PR-003:pr-42'
 ```
+
+Use the ids printed in the report; `explain` suggests the available ids when one does not match.
 
 **Advisories with a local model**
 

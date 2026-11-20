@@ -227,7 +227,10 @@ describe("rendering", () => {
     expect(text).toContain("MaintainerKit policy check");
     expect(text).toContain("Findings requiring attention");
     expect(text).toContain("[FAIL error] MK-REPO-001");
-    expect(text).toContain("fix:");
+    // The remediation hint is one indented line, aligned with evidence and docs lines.
+    const fixLine = text.split("\n").find((line) => line.trimStart().startsWith("fix:"));
+    expect(fixLine).toBeDefined();
+    expect(fixLine).toMatch(/^ {6}fix: \S/);
     expect(text).toContain("Result: FAIL");
     expect(text).not.toMatch(/[\u{1F300}-\u{1FAFF}]/u);
   });

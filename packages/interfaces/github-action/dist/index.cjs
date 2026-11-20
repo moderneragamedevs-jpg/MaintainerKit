@@ -26824,8 +26824,7 @@ function renderText(report, options = {}) {
         lines.push(`      ${evidence.label}: ${evidence.value}`);
       }
       if (finding2.remediation) {
-        lines.push("      fix:");
-        lines.push(...wrap(finding2.remediation));
+        lines.push(...wrap(`fix: ${finding2.remediation}`, 88, "      "));
       }
       if (finding2.docsUrl)
         lines.push(`      docs: ${finding2.docsUrl}`);
