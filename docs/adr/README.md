@@ -10,4 +10,4 @@
 ## Writing a new ADR
 
 Use the next number, keep it short, and record the alternatives that lost. Decisions that change a public
-contract also need the RFC flow in [GOVERNANCE.md](../GOVERNANCE.md).
+contract also need the RFC flow in [GOVERNANCE.md](../../GOVERNANCE.md).
