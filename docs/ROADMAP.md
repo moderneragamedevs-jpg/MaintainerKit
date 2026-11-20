@@ -13,12 +13,14 @@ Versioning: SemVer for packages, independent SemVer for ContribSpec
 | E4 Audit       | Repository health checks, JSON + Markdown output, JSONL audit events          | done  |
 | E5 GitHub      | Octokit reader, CLI `check --pr`, GitHub Action with check publishing         | done  |
 | E6 AI          | Provider contract, mock + 3 adapters, classification/summary/risk, validation | done  |
-| E7 Community   | README, CONTRIBUTING, CoC, SECURITY, GOVERNANCE, templates, docs site         | done  |
+| E7 Community   | README, CONTRIBUTING, CoC, SECURITY, GOVERNANCE, templates, docs + examples   | done  |
+| E8 Releases    | Release readiness on the CLI (`check --release <version>`), reports first     | done  |
 
 ## Milestone 0.2 — Adoption hardening
 
 - [ ] `maintainerkit check --base <ref>` diff-aware evaluation for local branches.
-- [ ] Issue policies: label requirements, template detection, stale policy metadata.
+- [ ] Issue policies: label requirements, template detection, stale policy metadata. `issues.*` is
+      already validated and carried in the snapshot; no rule consumes it yet.
 - [ ] SARIF output for GitHub code scanning.
 - [ ] Config `extends` for organization-wide shared ContribSpec documents.
 - [ ] GitLab adapter proving provider independence.
@@ -41,7 +43,8 @@ Versioning: SemVer for packages, independent SemVer for ContribSpec
 ## Backlog ready for outside contributors
 
 - `good first issue`: add a rule (each rule is a self-contained file, tests, docs entry).
-- `good first issue`: documentation examples for `examples/`.
+- `good first issue`: an issue-template rule for `issues.requireTemplate` (the field is validated but
+  unused).
 - `good first issue`: new `explain` topics.
 - `help wanted`: SARIF renderer.
 - `help wanted`: GitLab adapter (uses only `core` contracts).
