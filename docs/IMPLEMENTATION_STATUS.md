@@ -16,7 +16,7 @@ in each row.
 | Local git adapter                                      | Done                    | `packages/integrations/git/test` — 9 tests                                                                            |
 | GitHub read adapter + gated check publishing           | Done                    | `packages/integrations/github/test` — 24 tests (all endpoints faked, no network)                                      |
 | Workflow engine + renderers                            | Done                    | `packages/workflow-engine/test` — 17 tests (text, JSON, Markdown, check-run content)                                  |
-| CLI (7 commands)                                       | Done                    | `packages/interfaces/cli/test` — 41 tests; `tests/e2e` — 4 binary tests                                               |
+| CLI (7 commands)                                       | Done                    | `packages/interfaces/cli/test` — 45 tests; `tests/e2e` — 4 binary tests                                               |
 | AI core, 3 providers, prompts, advisor                 | Done                    | `packages/ai/**` — 79 tests, including one shared provider contract suite                                             |
 | SDK facade                                             | Done                    | `packages/interfaces/sdk`; used by `examples/sdk/check.mjs`                                                           |
 | GitHub Action (bundled, read-only by default)          | Done                    | `packages/interfaces/github-action/test` — 15 tests; `dist/index.cjs` runs and fails closed without inputs (`exit 2`) |
