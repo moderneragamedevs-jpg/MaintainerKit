@@ -1,0 +1,32 @@
+{
+  "name": "@maintainerkit/ai-advisor",
+  "version": "0.1.0",
+  "description": "Turns AI provider output into validated, non-authoritative advisories for MaintainerKit runs",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@maintainerkit/ai-core": "workspace:*",
+    "@maintainerkit/ai-prompts": "workspace:*",
+    "@maintainerkit/ai-providers": "workspace:*",
+    "@maintainerkit/core": "workspace:*"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

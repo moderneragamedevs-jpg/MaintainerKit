@@ -1,0 +1,48 @@
+# MaintainerKit write-enabled workflow — publishes a check run.
+#
+# This file is deliberately separate from the read-only workflow (ADR-0004):
+#   - the only write permission is `checks: write`
+#   - the write gate MAINTAINERKIT_ALLOW_WRITE must be set for the action to write anything
+#   - it is skipped for fork pull requests, where the token cannot write anyway
+#   - it can never merge, close, label, or comment
+name: MaintainerKit (check run)
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: maintainerkit-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  check-run:
+    name: MaintainerKit check run
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      MAINTAINERKIT_ALLOW_WRITE: "true"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: ./
+        with:
+          config: maintainerkit.yml
+          publish-checks: "true"
+          name: MaintainerKit
+          fail-on: error
+          audit-log: maintainerkit-audit.jsonl
+
+      - name: Upload audit trail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maintainerkit-check-audit
+          path: maintainerkit-audit.jsonl
+          if-no-files-found: warn

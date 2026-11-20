@@ -1,0 +1,49 @@
+name: Feature request / RFC
+description: Propose a change, including policy rules and public contracts.
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Changes to public contracts (rule ids, ContribSpec fields, report schema, CLI flags) need the RFC
+        section filled in. See GOVERNANCE.md.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is broken or missing? Evidence beats opinions.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: The smallest change that solves it. Include exact ids, fields, or flags.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: contract
+    attributes:
+      label: Does this change a public contract?
+      options:
+        - "No (bug fix, docs, internal refactor)"
+        - "Yes: ContribSpec field"
+        - "Yes: rule id or rule semantics"
+        - "Yes: report schema"
+        - "Yes: CLI flag or exit code"
+        - "Yes: security model"
+    validations:
+      required: true
+  - type: textarea
+    id: security
+    attributes:
+      label: Security impact
+      description: Could this weaken a boundary, add a write path, or expose data to a provider?
+  - type: textarea
+    id: testing
+    attributes:
+      label: How should this be verified?

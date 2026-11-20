@@ -1,0 +1,399 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:maintainerkit:contribspec:1.0",
+  "title": "ContribSpec 1.0",
+  "description": "MaintainerKit repository policy specification, version 1.0. Authored in YAML, validated against this schema, evaluated deterministically by the policy engine.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specVersion"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "maxLength": 512,
+      "description": "Optional editor hint pointing at this schema."
+    },
+    "specVersion": {
+      "type": "string",
+      "pattern": "^[0-9]{1,2}\\.[0-9]{1,2}$",
+      "description": "ContribSpec version of this document, e.g. \"1.0\". Major versions are not backwards compatible."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 512,
+          "pattern": "^https?://"
+        },
+        "maintainers": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requiredFiles": {
+          "type": "array",
+          "maxItems": 100,
+          "description": "Files that must exist in the repository. Strings are shorthand for a path-only entry.",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/requiredFile"
+              },
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              }
+            ]
+          }
+        }
+      }
+    },
+    "pullRequests": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "$ref": "#/$defs/prTitle"
+        },
+        "description": {
+          "$ref": "#/$defs/prDescription"
+        },
+        "checks": {
+          "$ref": "#/$defs/prChecks"
+        },
+        "contributor": {
+          "$ref": "#/$defs/prContributor"
+        }
+      }
+    },
+    "issues": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requireTemplate": {
+          "type": "boolean",
+          "description": "Require at least one issue template under .github/ISSUE_TEMPLATE."
+        },
+        "requiredLabels": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        },
+        "staleAfterDays": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3650,
+          "description": "Documentation-only in 0.1: contributes to the stale policy metadata report."
+        }
+      }
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "changelogPath": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "requireUnreleasedSection": {
+          "type": "boolean"
+        },
+        "requireChangelogEntry": {
+          "type": "boolean"
+        },
+        "versionFiles": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requireDependencyAlerts": {
+          "type": "boolean"
+        },
+        "requireSecretScanning": {
+          "type": "boolean"
+        },
+        "requirePushProtection": {
+          "type": "boolean"
+        },
+        "requireBranchProtection": {
+          "type": "boolean"
+        },
+        "requireSignedCommits": {
+          "type": "boolean"
+        },
+        "minimumApprovals": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        }
+      }
+    },
+    "ai": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "provider": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "Registered provider id, e.g. mock, openai-compatible, anthropic, ollama."
+        },
+        "model": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "capabilities": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/$defs/aiCapability"
+          }
+        },
+        "requireHumanApprovalFor": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/$defs/agentOperation"
+          }
+        }
+      }
+    },
+    "agents": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowedOperations": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/$defs/agentOperation"
+          }
+        },
+        "humanApprovalRequired": {
+          "type": "boolean"
+        }
+      }
+    },
+    "rules": {
+      "type": "object",
+      "description": "Per-rule overrides keyed by rule id, e.g. MK-PR-001.",
+      "propertyNames": {
+        "pattern": "^MK-[A-Z]{2,4}-[0-9]{3}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "severity": {
+            "$ref": "#/$defs/severity"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ]
+    },
+    "requiredFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 200
+        }
+      }
+    },
+    "prTitle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "convention": {
+          "type": "string",
+          "enum": [
+            "conventional",
+            "none"
+          ],
+          "description": "conventional = Conventional Commits style type(scope)!: subject."
+        },
+        "types": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,19}$"
+          }
+        },
+        "requireScope": {
+          "type": "boolean"
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300
+        }
+      }
+    },
+    "prDescription": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minLength": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        },
+        "requiredSections": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "requireLinkedIssue": {
+          "type": "boolean"
+        }
+      }
+    },
+    "prChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "acceptedConclusions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "enum": [
+              "success",
+              "neutral",
+              "skipped"
+            ]
+          }
+        }
+      }
+    },
+    "prContributor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowedAuthorAssociations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 9,
+          "items": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "MEMBER",
+              "COLLABORATOR",
+              "CONTRIBUTOR",
+              "FIRST_TIME_CONTRIBUTOR",
+              "FIRST_TIMER",
+              "MANNEQUIN",
+              "NONE"
+            ]
+          }
+        },
+        "requireDcoSignoff": {
+          "type": "boolean"
+        },
+        "requireVerifiedCommits": {
+          "type": "boolean"
+        }
+      }
+    },
+    "agentOperation": {
+      "type": "string",
+      "enum": [
+        "read",
+        "comment",
+        "label",
+        "close",
+        "merge",
+        "release",
+        "push"
+      ]
+    },
+    "aiCapability": {
+      "type": "string",
+      "enum": [
+        "issue-classification",
+        "duplicate-issue-suggestion",
+        "pull-request-summary",
+        "risk-analysis",
+        "review-assistance",
+        "release-notes"
+      ]
+    }
+  }
+}

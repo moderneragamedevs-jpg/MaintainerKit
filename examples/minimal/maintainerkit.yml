@@ -1,0 +1,32 @@
+# Minimal, practical ContribSpec document.
+# Copy this file to the root of your repository as `maintainerkit.yml`.
+specVersion: "1.0"
+
+repository:
+  requiredFiles:
+    - path: README.md
+      description: What the project does and how to run it.
+    - path: LICENSE
+      description: Terms under which the code may be used.
+
+pullRequests:
+  title:
+    convention: conventional
+    maxLength: 72
+  description:
+    minLength: 30
+    requiredSections:
+      - Summary
+      - Testing
+  checks:
+    # Replace with the check name your CI reports (Actions shows "workflow / job").
+    required: []
+    acceptedConclusions: [success, neutral]
+
+ai:
+  enabled: false
+  capabilities: []
+
+agents:
+  allowedOperations: [read]
+  humanApprovalRequired: true

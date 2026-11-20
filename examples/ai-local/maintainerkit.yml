@@ -1,0 +1,26 @@
+# AI enabled against a local Ollama server: no API key, no data leaves the machine.
+# Start Ollama first, e.g. `ollama serve` and `ollama pull llama3.1`.
+specVersion: "1.0"
+
+repository:
+  requiredFiles: [README.md, LICENSE]
+
+pullRequests:
+  title:
+    convention: conventional
+  description:
+    minLength: 30
+    requiredSections: [Summary]
+
+ai:
+  enabled: true
+  provider: ollama
+  model: llama3.1
+  capabilities:
+    - pull-request-summary
+    - risk-analysis
+  requireHumanApprovalFor: [comment, label, close, merge, release, push]
+
+agents:
+  allowedOperations: [read]
+  humanApprovalRequired: true

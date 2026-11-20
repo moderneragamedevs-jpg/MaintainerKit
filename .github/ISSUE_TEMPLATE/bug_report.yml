@@ -1,0 +1,58 @@
+name: Bug report
+description: Something does not work as documented.
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not report security vulnerabilities here — see SECURITY.md.
+  - type: input
+    id: version
+    attributes:
+      label: MaintainerKit version
+      description: Output of `maintainerkit --version`, or the commit you built from.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - CLI
+        - ContribSpec validation
+        - Policy rule
+        - Repository audit
+        - GitHub integration
+        - GitHub Action
+        - AI / provider
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      description: Include the exact command and the relevant output. Remove tokens and private URLs.
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Minimal ContribSpec document
+      description: A smallest-possible document that reproduces the problem.
+      render: yaml
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I removed secrets, tokens, and private repository names from this report.
+          required: true
+        - label: I searched existing issues first.
+          required: true

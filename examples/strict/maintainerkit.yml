@@ -1,0 +1,60 @@
+# Strict policy for a library with external contributors and a release process.
+specVersion: "1.0"
+
+repository:
+  requiredFiles:
+    - path: README.md
+    - path: LICENSE
+    - path: CONTRIBUTING.md
+    - path: SECURITY.md
+    - path: CODE_OF_CONDUCT.md
+    - path: CHANGELOG.md
+    - path: GOVERNANCE.md
+
+pullRequests:
+  title:
+    convention: conventional
+    types: [feat, fix, docs, refactor, perf, test, build, ci, chore, revert, security]
+    requireScope: true
+    maxLength: 72
+  description:
+    minLength: 40
+    requiredSections: [Summary, Testing]
+    requireLinkedIssue: true
+  checks:
+    required: [verify, lint, test]
+    acceptedConclusions: [success, neutral]
+  contributor:
+    allowedAuthorAssociations: [OWNER, MEMBER, COLLABORATOR, CONTRIBUTOR]
+    requireDcoSignoff: true
+    requireVerifiedCommits: false
+
+issues:
+  requireTemplate: true
+  staleAfterDays: 90
+
+release:
+  changelogPath: CHANGELOG.md
+  requireUnreleasedSection: true
+  requireChangelogEntry: true
+  versionFiles: [package.json]
+
+security:
+  requireDependencyAlerts: true
+  requireSecretScanning: true
+  requirePushProtection: true
+  requireBranchProtection: true
+  requireSignedCommits: false
+  minimumApprovals: 1
+
+ai:
+  enabled: false
+  capabilities: []
+
+agents:
+  allowedOperations: [read]
+  humanApprovalRequired: true
+
+rules:
+  MK-PR-004:
+    severity: warning

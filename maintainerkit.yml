@@ -1,0 +1,71 @@
+# MaintainerKit's own ContribSpec document.
+# MaintainerKit is governed by the rules it ships — this file is validated in CI (`pnpm verify`).
+specVersion: "1.0"
+
+metadata:
+  name: MaintainerKit
+  description: Open-source repository governance and maintenance platform.
+  maintainers:
+    - MaintainerKit maintainers
+
+repository:
+  requiredFiles:
+    - path: README.md
+      description: What the project is and how to use it.
+    - path: LICENSE
+      description: Apache-2.0 license text.
+    - path: CONTRIBUTING.md
+      description: How to set up, test, and submit changes.
+    - path: SECURITY.md
+      description: How to report a vulnerability.
+    - path: CODE_OF_CONDUCT.md
+      description: Community expectations.
+    - path: GOVERNANCE.md
+      description: How decisions are made.
+    - path: CHANGELOG.md
+      description: Notable changes per release.
+    - path: AGENTS.md
+      description: Operating rules for AI coding agents in this repository.
+
+pullRequests:
+  title:
+    convention: conventional
+    types: [feat, fix, docs, refactor, perf, test, build, ci, chore, revert, security]
+    maxLength: 72
+  description:
+    minLength: 30
+    requiredSections: [Summary, Testing]
+  checks:
+    required: [verify]
+    acceptedConclusions: [success, neutral]
+  contributor:
+    requireDcoSignoff: true
+
+issues:
+  requireTemplate: true
+
+release:
+  changelogPath: CHANGELOG.md
+  requireUnreleasedSection: true
+  requireChangelogEntry: true
+  versionFiles:
+    - package.json
+    - packages/interfaces/cli/package.json
+
+security:
+  requireDependencyAlerts: true
+  requireSecretScanning: true
+  requireBranchProtection: true
+  minimumApprovals: 1
+
+ai:
+  enabled: false
+  capabilities: []
+
+agents:
+  allowedOperations: [read]
+  humanApprovalRequired: true
+
+rules:
+  MK-SEC-001:
+    severity: warning

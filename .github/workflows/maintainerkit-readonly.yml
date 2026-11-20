@@ -1,0 +1,47 @@
+# MaintainerKit policy check — read-only reference workflow.
+#
+# Why this is safe:
+#   - trigger is `pull_request`, never `pull_request_target`
+#   - permissions are `contents: read` (the default token is read-only for fork PRs anyway)
+#   - no secrets are required or exposed
+#   - `persist-credentials: false` keeps the token out of the git config
+#   - the Action analyses API metadata only; no code from the PR is built or executed
+#
+# Publishing a check run is a separate, explicitly gated workflow:
+# see maintainerkit-check-run.yml.
+name: MaintainerKit (read-only)
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    name: MaintainerKit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Built bundle is committed at packages/interfaces/github-action/dist/index.js
+      - uses: ./
+        with:
+          config: maintainerkit.yml
+          publish-checks: "false"
+          audit-log: maintainerkit-audit.jsonl
+          report-output: maintainerkit-report.json
+          fail-on: error
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maintainerkit-report
+          path: |
+            maintainerkit-report.json
+            maintainerkit-audit.jsonl
+          if-no-files-found: warn

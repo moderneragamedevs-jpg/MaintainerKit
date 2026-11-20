@@ -1,0 +1,43 @@
+{
+  "name": "@maintainerkit/cli",
+  "version": "0.1.0",
+  "description": "MaintainerKit command-line interface: init, validate, doctor, audit, check, report, explain",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "maintainerkit": "./dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@maintainerkit/ai-core": "workspace:*",
+    "@maintainerkit/ai-prompts": "workspace:*",
+    "@maintainerkit/ai-providers": "workspace:*",
+    "@maintainerkit/audit": "workspace:*",
+    "@maintainerkit/contribspec": "workspace:*",
+    "@maintainerkit/core": "workspace:*",
+    "@maintainerkit/git-integration": "workspace:*",
+    "@maintainerkit/github": "workspace:*",
+    "@maintainerkit/policy-engine": "workspace:*",
+    "@maintainerkit/workflow-engine": "workspace:*",
+    "commander": "^15.1.0",
+    "@maintainerkit/ai-advisor": "workspace:*"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

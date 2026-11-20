@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Unit, contract, architecture and security tests
+        run: pnpm vitest run
+
+      - name: End-to-end CLI tests
+        run: pnpm vitest run tests/e2e
+
+      - name: Validate our own ContribSpec
+        run: node packages/interfaces/cli/dist/bin.js validate
+
+      - name: Audit this repository
+        run: |
+          node packages/interfaces/cli/dist/bin.js audit \
+            --format markdown \
+            --output maintainerkit-audit.md \
+            --audit-log maintainerkit-audit.jsonl
+
+      - name: Policy check (repository policies)
+        run: node packages/interfaces/cli/dist/bin.js check --format json --output maintainerkit-report.json
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maintainerkit-reports
+          path: |
+            maintainerkit-audit.md
+            maintainerkit-audit.jsonl
+            maintainerkit-report.json
+          if-no-files-found: warn

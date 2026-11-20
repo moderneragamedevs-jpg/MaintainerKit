@@ -1,0 +1,51 @@
+name: MaintainerKit
+description: Validate a ContribSpec policy document and evaluate its policies on pull requests or a repository.
+author: MaintainerKit contributors
+
+branding:
+  icon: check-circle
+  color: blue
+
+inputs:
+  config:
+    description: Path to the ContribSpec document, relative to the workspace.
+    required: false
+    default: maintainerkit.yml
+  repo:
+    description: Repository in owner/name form. Defaults to the workflow repository.
+    required: false
+    default: ""
+  pr:
+    description: Pull request number. Defaults to the number in the event payload.
+    required: false
+    default: ""
+  publish-checks:
+    description: >-
+      Publish a check run with the result. Requires checks: write on the token and
+      MAINTAINERKIT_ALLOW_WRITE=true in the workflow environment.
+    required: false
+    default: "false"
+  fail-on:
+    description: Severity at which findings fail the run (info, warning, error).
+    required: false
+    default: error
+  audit-log:
+    description: Path for the JSONL audit trail, relative to the workspace. Empty disables it.
+    required: false
+    default: maintainerkit-audit.jsonl
+  report-output:
+    description: Optional path for the JSON report, relative to the workspace.
+    required: false
+    default: ""
+  name:
+    description: Display name used for the report and check run.
+    required: false
+    default: MaintainerKit
+  ai-timeout:
+    description: Per-request AI timeout in seconds. Only used when AI is enabled in the policy document.
+    required: false
+    default: ""
+
+runs:
+  using: node24
+  main: packages/interfaces/github-action/dist/index.cjs

@@ -1,0 +1,54 @@
+{
+  "name": "maintainerkit-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "MaintainerKit — open-source repository governance and maintenance platform",
+  "license": "Apache-2.0",
+  "type": "module",
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "turbo run typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "vitest run && turbo run build typecheck && eslint . && prettier --check .",
+    "test:e2e": "pnpm build && vitest run tests/e2e",
+    "test:all": "pnpm build && vitest run"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/node": "^22.18.0",
+    "@vitest/coverage-v8": "^5.1.1",
+    "eslint": "^9.39.5",
+    "prettier": "^3.10.1",
+    "turbo": "^2.11.13",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.73.0",
+    "vitest": "^5.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maintainerkit/maintainerkit.git"
+  },
+  "homepage": "https://github.com/maintainerkit/maintainerkit#readme",
+  "bugs": {
+    "url": "https://github.com/maintainerkit/maintainerkit/issues"
+  },
+  "keywords": [
+    "maintainers",
+    "repository",
+    "policy",
+    "contribspec",
+    "github-action",
+    "cli",
+    "audit"
+  ]
+}

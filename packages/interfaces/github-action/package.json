@@ -1,0 +1,27 @@
+{
+  "name": "@maintainerkit/github-action",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GitHub Action that validates ContribSpec and evaluates policies on pull requests",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit && node scripts/bundle.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@maintainerkit/ai-advisor": "workspace:*",
+    "@maintainerkit/audit": "workspace:*",
+    "@maintainerkit/contribspec": "workspace:*",
+    "@maintainerkit/core": "workspace:*",
+    "@maintainerkit/github": "workspace:*",
+    "@maintainerkit/policy-engine": "workspace:*",
+    "@maintainerkit/workflow-engine": "workspace:*"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

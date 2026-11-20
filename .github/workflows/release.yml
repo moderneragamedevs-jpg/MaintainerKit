@@ -1,0 +1,60 @@
+# Release workflow.
+#
+# Runs on a version tag. It verifies the build and then performs an npm publish **dry run** by default.
+# A real publish requires:
+#   1. a maintainer to remove --dry-run in a reviewed commit, or set the workflow input publish=true
+#   2. the NPM_TOKEN secret to exist (scoped @maintainerkit/*)
+#   3. explicit human authorization (see GOVERNANCE.md)
+#
+# No package is published automatically, and nothing here runs until a tag is pushed.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  verify-and-pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm vitest run
+      - run: pnpm vitest run tests/e2e
+
+      - name: Pack (proves the artifacts build)
+        run: |
+          for pkg in packages/core packages/contribspec packages/policy-engine packages/audit \
+                     packages/workflow-engine packages/integrations/git packages/integrations/github \
+                     packages/ai/core packages/ai/providers packages/ai/prompts packages/ai/advisor \
+                     packages/interfaces/cli packages/interfaces/sdk; do
+            (cd "$pkg" && pnpm pack --pack-destination "$GITHUB_WORKSPACE/packs")
+          done
+
+      - name: Publish (dry run unless explicitly authorized)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN}" ]; then
+            echo "NPM_TOKEN is not configured; skipping publication."
+            exit 0
+          fi
+          echo "Publishing is intentionally disabled in this template."
+          echo "A maintainer must enable it with authorization; see GOVERNANCE.md."

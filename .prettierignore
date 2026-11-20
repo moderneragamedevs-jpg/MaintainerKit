@@ -1,0 +1,15 @@
+node_modules
+dist
+build
+coverage
+.turbo
+pnpm-lock.yaml
+*.md
+!docs/**/*.md
+!README.md
+!CONTRIBUTING.md
+
+# Generated from packages/contribspec/src/schema/contribspec-1.0.schema.json — do not reformat; the
+# generator owns the exact bytes and a test asserts the copies match.
+packages/contribspec/src/schema.generated.ts
+schemas/contribspec-1.0.schema.json

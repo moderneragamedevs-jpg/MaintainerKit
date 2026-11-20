@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": ["packages/**/test/**/*.ts", "tests/**/*.ts"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@maintainerkit/core": ["packages/core/src/index.ts"],
+      "@maintainerkit/contribspec": ["packages/contribspec/src/index.ts"],
+      "@maintainerkit/policy-engine": ["packages/policy-engine/src/index.ts"],
+      "@maintainerkit/audit": ["packages/audit/src/index.ts"],
+      "@maintainerkit/workflow-engine": ["packages/workflow-engine/src/index.ts"],
+      "@maintainerkit/git-integration": ["packages/integrations/git/src/index.ts"],
+      "@maintainerkit/github": ["packages/integrations/github/src/index.ts"],
+      "@maintainerkit/ai-core": ["packages/ai/core/src/index.ts"],
+      "@maintainerkit/ai-providers": ["packages/ai/providers/src/index.ts"],
+      "@maintainerkit/ai-prompts": ["packages/ai/prompts/src/index.ts"],
+      "@maintainerkit/cli": ["packages/interfaces/cli/src/index.ts"],
+      "@maintainerkit/sdk": ["packages/interfaces/sdk/src/index.ts"],
+      "@maintainerkit/github-action": ["packages/interfaces/github-action/src/index.ts"]
+    }
+  }
+}

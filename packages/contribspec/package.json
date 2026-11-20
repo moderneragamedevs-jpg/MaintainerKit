@@ -1,0 +1,32 @@
+{
+  "name": "@maintainerkit/contribspec",
+  "version": "0.1.0",
+  "description": "ContribSpec 1.0 — the versioned repository policy specification: schema, loader, validation, migration",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node scripts/generate-schema.mjs && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "schema:sync": "node scripts/generate-schema.mjs"
+  },
+  "dependencies": {
+    "@maintainerkit/core": "workspace:*",
+    "ajv": "^8.20.0",
+    "yaml": "^2.9.1"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

@@ -1,0 +1,9 @@
+# Normalise line endings in the repository; checkouts are native.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+
+# The bundled Action is generated; keep it out of diffs by default.
+packages/interfaces/github-action/dist/index.cjs linguist-generated=true

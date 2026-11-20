@@ -1,0 +1,30 @@
+name: MaintainerKit
+description: Validate a ContribSpec policy document and evaluate its policies (bundled action).
+
+branding:
+  icon: check-circle
+  color: blue
+
+inputs:
+  config:
+    default: maintainerkit.yml
+  repo:
+    default: ""
+  pr:
+    default: ""
+  publish-checks:
+    default: "false"
+  fail-on:
+    default: error
+  audit-log:
+    default: maintainerkit-audit.jsonl
+  report-output:
+    default: ""
+  name:
+    default: MaintainerKit
+  ai-timeout:
+    default: ""
+
+runs:
+  using: node24
+  main: dist/index.cjs
