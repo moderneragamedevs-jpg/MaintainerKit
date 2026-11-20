@@ -23,7 +23,8 @@ ContribSpec change.
 - **Integrations**: local filesystem/git adapter (path-traversal safe, size-capped) and an Octokit
   read adapter with typed error mapping and a gated check-run publisher.
 - **CLI**: `init`, `validate`, `doctor`, `audit`, `check`, `report`, `explain`; `text|json|markdown`
-  output; documented exit codes; works with no AI provider configured.
+  output; documented exit codes; works with no AI provider configured. `check` evaluates repository,
+  pull-request (`--pr`), and release (`--release <version>`) subjects.
 - **GitHub Action**: bundled `node24` action running on `pull_request` only, `contents: read` by
   default, job-summary output, optional check-run publishing behind a write gate.
 - **AI layer (optional)**: `AIProvider` contract, six capability schemas, structured-output validation

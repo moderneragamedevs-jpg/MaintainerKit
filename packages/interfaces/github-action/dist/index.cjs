@@ -26668,6 +26668,9 @@ async function runCheck(options) {
     await emit(options.auditSink, event);
   };
   const repository = await options.source.getRepository();
+  if (options.pullRequestNumber !== void 0 && options.releaseVersion !== void 0) {
+    throw new ConfigError("A check evaluates one subject: provide a pull request number or a release version, not both.", "workflow/subject-conflict");
+  }
   let pullRequest;
   if (options.pullRequestNumber !== void 0) {
     if (!("getPullRequest" in options.source) || typeof options.source.getPullRequest !== "function") {
@@ -26680,6 +26683,11 @@ async function runCheck(options) {
     label: `${repository.ref.owner ?? repository.ref.name}/${repository.ref.name}#${pullRequest.number}`,
     repository,
     pullRequest
+  } : options.releaseVersion !== void 0 ? {
+    kind: "release",
+    label: `${repository.ref.owner ? `${repository.ref.owner}/` : ""}${repository.ref.name}@${options.releaseVersion}`,
+    repository,
+    release: { version: options.releaseVersion }
   } : {
     kind: "repository",
     label: repository.ref.owner ? `${repository.ref.owner}/${repository.ref.name}` : repository.ref.name,

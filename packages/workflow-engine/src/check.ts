@@ -43,6 +43,11 @@ export interface RunCheckOptions extends WorkflowContext {
   config: ResolvedConfig;
   /** When set, the run evaluates pull-request policies for this PR instead of repository policies. */
   pullRequestNumber?: number;
+  /**
+   * When set, the run evaluates release policies for this version. Mutually exclusive with
+   * `pullRequestNumber`: one run evaluates one subject.
+   */
+  releaseVersion?: string;
   failOn?: Severity;
   dryRun?: boolean;
   advisor?: Advisor;
@@ -115,6 +120,13 @@ export async function runCheck(options: RunCheckOptions): Promise<WorkflowResult
 
   const repository: RepositorySnapshot = await options.source.getRepository();
 
+  if (options.pullRequestNumber !== undefined && options.releaseVersion !== undefined) {
+    throw new ConfigError(
+      "A check evaluates one subject: provide a pull request number or a release version, not both.",
+      "workflow/subject-conflict",
+    );
+  }
+
   let pullRequest: PullRequestSnapshot | undefined;
   if (options.pullRequestNumber !== undefined) {
     if (
@@ -137,13 +149,20 @@ export async function runCheck(options: RunCheckOptions): Promise<WorkflowResult
         repository,
         pullRequest,
       }
-    : {
-        kind: "repository",
-        label: repository.ref.owner
-          ? `${repository.ref.owner}/${repository.ref.name}`
-          : repository.ref.name,
-        repository,
-      };
+    : options.releaseVersion !== undefined
+      ? {
+          kind: "release",
+          label: `${repository.ref.owner ? `${repository.ref.owner}/` : ""}${repository.ref.name}@${options.releaseVersion}`,
+          repository,
+          release: { version: options.releaseVersion },
+        }
+      : {
+          kind: "repository",
+          label: repository.ref.owner
+            ? `${repository.ref.owner}/${repository.ref.name}`
+            : repository.ref.name,
+          repository,
+        };
 
   await push(
     createAuditEvent({

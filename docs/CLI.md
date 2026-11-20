@@ -96,14 +96,19 @@ fails.
 
 ```bash
 maintainerkit check [--path <dir>] [--repo owner/name] [--ref <ref>] [--pr <number>]
+                    [--release <version>]
                     [--config <file>] [--fail-on info|warning|error]
                     [--format text|json|markdown] [--output <file>] [--audit-log <file>]
                     [--dry-run] [--verbose]
                     [--ai] [--provider <id>] [--model <name>] [--ai-timeout <seconds>]
 ```
 
-- Without `--pr`: evaluates the rules that apply to a repository.
+- Without `--pr` or `--release`: evaluates the rules that apply to a repository.
 - With `--pr` (requires `--repo`): evaluates pull-request rules for that PR.
+- With `--release <version>`: evaluates release rules (`MK-REL-001`): changelog presence, an `Unreleased`
+  section, a changelog entry for the version, and the version declared in `versionFiles`. A leading `v` is
+  accepted and stripped, and a mismatch between the requested version and a manifest is a failure that
+  names both values. Works locally and with `--repo`. Cannot be combined with `--pr`.
 - `--dry-run`: reports only. The CLI never writes to GitHub, so this is a statement of intent for
   pipelines; it also prints that no write was attempted.
 - `--ai`: enables advisories for this run. Without a provider, the report gains a warning diagnostic and
@@ -177,6 +182,15 @@ maintainerkit explain --input maintainerkit-report.json --finding 'MK-PR-003:pr-
 ```
 
 Use the ids printed in the report; `explain` suggests the available ids when one does not match.
+
+**Check a release before tagging**
+
+```bash
+maintainerkit check --release 1.4.0 --format markdown --output release-check.md
+```
+
+The run fails if `CHANGELOG.md` has no `Unreleased` section, no `1.4.0` entry, or if a manifest still says
+`1.3.0`.
 
 **Advisories with a local model**
 

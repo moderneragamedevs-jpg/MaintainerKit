@@ -319,6 +319,65 @@ describe("check", () => {
     expect(result.stderr).toContain("--pr requires --repo");
   });
 
+  it("evaluates release policies with --release", async () => {
+    await write(
+      "maintainerkit.yml",
+      `specVersion: "1.0"
+repository:
+  requiredFiles: []
+release:
+  changelogPath: CHANGELOG.md
+  requireUnreleasedSection: true
+  requireChangelogEntry: true
+  versionFiles: [package.json]
+`,
+    );
+    await write(
+      "CHANGELOG.md",
+      "# Changelog\n\n## Unreleased\n\n## [1.4.0] - 2026-01-01\n\n- Thing.\n",
+    );
+    await write("package.json", '{ "name": "widget", "version": "1.4.0" }\n');
+
+    const result = await run(["check", "--release", "v1.4.0", "--format", "json"]);
+    expect(result.exitCode).toBe(0);
+
+    const report = JSON.parse(result.stdout) as {
+      subject: { kind: string; label: string };
+      findings: { ruleId: string; status: string }[];
+    };
+    expect(report.subject.kind).toBe("release");
+    expect(report.subject.label.endsWith("@1.4.0")).toBe(true);
+    expect(report.findings.map((finding) => finding.ruleId)).toContain("MK-REL-001");
+    expect(report.findings.every((finding) => finding.status !== "fail")).toBe(true);
+  });
+
+  it("reports a release version that disagrees with the manifest", async () => {
+    await write(
+      "maintainerkit.yml",
+      `specVersion: "1.0"
+repository:
+  requiredFiles: []
+release:
+  changelogPath: CHANGELOG.md
+  requireChangelogEntry: true
+  versionFiles: [package.json]
+`,
+    );
+    await write("CHANGELOG.md", "# Changelog\n\n## Unreleased\n\n## [1.4.0]\n\n- Thing.\n");
+    await write("package.json", '{ "name": "widget", "version": "1.3.0" }\n');
+
+    const result = await run(["check", "--release", "1.4.0"]);
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toContain("1.3.0");
+  });
+
+  it("rejects --release combined with --pr", async () => {
+    await write("maintainerkit.yml", policy);
+    const result = await run(["check", "--repo", "acme/widget", "--pr", "5", "--release", "1.0.0"]);
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("cannot be combined");
+  });
+
   it("honours --fail-on warning", async () => {
     await write(
       "maintainerkit.yml",

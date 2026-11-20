@@ -24,7 +24,7 @@ in each row.
 | Documentation set                                      | Done                    | `docs/` (13 documents + 4 ADRs), root governance files, runnable `examples/`                                          |
 | CI + release workflow definitions                      | Done (definitions only) | `.github/workflows/{ci,maintainerkit-readonly,maintainerkit-check-run,release}.yml`                                   |
 
-**Test totals:** 352 tests, 351 passing, 1 skipped — the skip is the e2e placeholder that makes an
+**Test totals:** 355 tests, 354 passing, 1 skipped — the skip is the e2e placeholder that makes an
 unbuilt-binary skip visible instead of silent. When the workspace is built, the 4 real e2e tests run.
 
 Full pipeline result: `pnpm verify` (tests → build → typecheck → lint → format) plus `pnpm test:e2e`
@@ -47,16 +47,16 @@ Full pipeline result: `pnpm verify` (tests → build → typecheck → lint → 
 
 - **Security posture from a local checkout is unknowable.** `MK-SEC-001`, `MK-AUD-008`, and `MK-AUD-009`
   return `skip` with a reason instead of guessing. Use `--repo owner/name` with a token.
-- **`release` subject on the CLI.** `MK-REL-001` works through the engine and SDK; the CLI has no
-  `--release <version>` flag yet (see `docs/ROADMAP.md`).
 - **Issue rules.** `issues.*` is validated and carried in the snapshot, but no rule consumes it yet:
   `MK-PR-004` covers contributor requirements, and issue classification is advisory-only.
 - **Windows.** Verified on Windows with Node 22.15; paths with spaces are handled through `file://` URLs.
   Linux is exercised by the CI definition, which has not yet run in a hosted environment.
 - **Breaking-change detection in AI release notes** is prompt-level only; there is no deterministic
   semver inference.
-- The Action bundle is committed by hand (`.gitignore` opts it back in). Changing Action source requires
-  rebuilding and committing `dist/index.cjs`; CI does not check that the bundle is up to date.
+- **Release checks need a policy section.** `--release <version>` evaluates whatever `release:` in the
+  document declares; with no `release:` section it only runs the rules that apply to every subject.
+- The Action bundle is committed (`.gitignore` opts that one file back in). CI rebuilds it and fails when
+  the committed `dist/index.cjs` is stale, so the check is enforced but the fix is still manual.
 
 ## How this status was verified
 

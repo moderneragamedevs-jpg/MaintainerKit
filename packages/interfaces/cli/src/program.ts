@@ -25,6 +25,7 @@ Examples:
   $ maintainerkit check --path .             Evaluate repository policies locally
   $ maintainerkit check --repo acme/widget --pr 42
                                              Evaluate pull-request policies on GitHub
+  $ maintainerkit check --release 1.4.0      Evaluate release policies for a version
   $ maintainerkit check --format json --output report.json
   $ maintainerkit report --input report.json --format markdown
   $ maintainerkit explain --rule MK-PR-001   Explain a rule
@@ -155,6 +156,7 @@ export function createProgram(
     .option("--pr <number>", "pull request number (requires --repo)", (value: string) =>
       Number.parseInt(value, 10),
     )
+    .option("--release <version>", "evaluate release policies for this version, e.g. 1.4.0")
     .option("--config <file>", "explicit path to the policy document")
     .option("--format <format>", "text | json | markdown", "text")
     .option("--output <file>", "also write the report to a file")
@@ -178,6 +180,7 @@ export function createProgram(
           ...(typeof options.pr === "number" && Number.isInteger(options.pr)
             ? { pr: options.pr }
             : {}),
+          ...(typeof options.release === "string" ? { release: options.release } : {}),
           ...(typeof options.config === "string" ? { config: options.config } : {}),
           ...(typeof options.format === "string" ? { format: options.format } : {}),
           ...(typeof options.output === "string" ? { output: options.output } : {}),

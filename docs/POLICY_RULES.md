@@ -204,8 +204,8 @@ DCO requires. Verified commits come from the provider's `verification.verified` 
 repository source cannot read file contents.
 
 **Notes:** JSON version files are parsed and compared exactly; other files are checked for the version
-string. A release snapshot is produced by the SDK or CLI (`check` with a release subject is not exposed
-on the CLI yet — see the roadmap).
+string. Run it with `maintainerkit check --release 1.4.0` (local or `--repo`), or build the subject through
+the SDK.
 
 ---
 

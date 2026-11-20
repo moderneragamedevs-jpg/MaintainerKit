@@ -14,6 +14,7 @@ export interface CheckCommandOptions {
   repo?: string;
   ref?: string;
   pr?: number;
+  release?: string;
   config?: string;
   format?: string;
   output?: string;
@@ -38,6 +39,28 @@ function parseFailOn(value: string | undefined): Severity {
 }
 
 /**
+ * Accepts `1.2.3` and `v1.2.3`, because both are written in the wild. The `v` prefix belongs to the tag,
+ * not to the version, so it is stripped before comparison with the declared version files.
+ */
+function normalizeReleaseVersion(value: string | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  const trimmed = value.trim().replace(/^v/i, "");
+  if (trimmed === "") {
+    throw new UsageError(
+      "--release requires a version.",
+      "Pass the version being released, e.g. --release 1.4.0.",
+    );
+  }
+  if (/\s/.test(trimmed)) {
+    throw new UsageError(
+      `"${value}" is not a version.`,
+      "Pass a single version token such as 1.4.0 or v1.4.0.",
+    );
+  }
+  return trimmed;
+}
+
+/**
  * Evaluates policies for a repository or a pull request.
  *
  * Order of operations matters for the security model: the source is resolved (read-only), the policy
@@ -56,6 +79,14 @@ export async function runCheckCommand(
     throw new UsageError(
       "--pr requires --repo owner/name.",
       "Pull requests only exist on a provider. Run repository-only checks with --path .",
+    );
+  }
+
+  const releaseVersion = normalizeReleaseVersion(options.release);
+  if (releaseVersion && options.pr !== undefined) {
+    throw new UsageError(
+      "--release and --pr cannot be combined.",
+      "A check evaluates one subject. Run the pull-request check and the release check separately.",
     );
   }
 
@@ -100,6 +131,7 @@ export async function runCheckCommand(
     source,
     config: config.resolved,
     ...(options.pr === undefined ? {} : { pullRequestNumber: options.pr }),
+    ...(releaseVersion ? { releaseVersion } : {}),
     failOn,
     dryRun: options.dryRun ?? false,
     now: context.now(),
@@ -109,6 +141,7 @@ export async function runCheckCommand(
     workflow: {
       name: "cli-check",
       ...(options.pr === undefined ? {} : { trigger: `pull_request:${options.pr}` }),
+      ...(releaseVersion ? { trigger: `release:${releaseVersion}` } : {}),
     },
   });
 
