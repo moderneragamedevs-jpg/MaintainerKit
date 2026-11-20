@@ -24,7 +24,7 @@ in each row.
 | Documentation set                                      | Done                    | `docs/` (13 documents + 4 ADRs), root governance files, runnable `examples/`                                          |
 | CI + release workflow definitions                      | Done (definitions only) | `.github/workflows/{ci,maintainerkit-readonly,maintainerkit-check-run,release}.yml`                                   |
 
-**Test totals:** 355 tests, 354 passing, 1 skipped — the skip is the e2e placeholder that makes an
+**Test totals:** 356 tests, 355 passing, 1 skipped — the skip is the e2e placeholder that makes an
 unbuilt-binary skip visible instead of silent. When the workspace is built, the 4 real e2e tests run.
 
 Full pipeline result: `pnpm verify` (tests → build → typecheck → lint → format) plus `pnpm test:e2e`
@@ -61,7 +61,7 @@ Full pipeline result: `pnpm verify` (tests → build → typecheck → lint → 
 ## How this status was verified
 
 ```bash
-corepack pnpm verify            # 351 passed, 1 skipped; 28 build tasks; lint and format clean
+corepack pnpm verify            # 355 passed, 1 skipped; 28 build tasks; lint and format clean
 corepack pnpm test:e2e          # binary-level CLI tests
 node packages/interfaces/cli/dist/bin.js validate
 node packages/interfaces/cli/dist/bin.js check

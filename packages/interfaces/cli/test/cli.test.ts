@@ -504,6 +504,23 @@ describe("explain", () => {
     expect(result.stdout).toContain("(7)");
   });
 
+  it("aligns the rule table by data width, not by a fixed guess", async () => {
+    const result = await run(["explain"]);
+    const lines = result.stdout.split("\n");
+    const header = lines.find((line) => line.includes("Applies to"));
+    expect(header).toBeDefined();
+    const titleColumn = header!.indexOf("Title");
+
+    const rows = lines.filter((line) => /^ {2}MK-[A-Z]+-\d{3} /.test(line));
+    expect(rows).toHaveLength(7);
+
+    // Every title starts exactly at the header's Title column, so no "applies to" list can push it left.
+    for (const line of rows) {
+      expect(line.slice(titleColumn - 2, titleColumn)).toBe("  ");
+      expect(line.charAt(titleColumn)).not.toBe(" ");
+    }
+  });
+
   it("explains a rule, including effective severity from configuration", async () => {
     await write(
       "maintainerkit.yml",

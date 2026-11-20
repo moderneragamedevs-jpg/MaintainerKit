@@ -78,10 +78,19 @@ const TOPICS: Record<string, string> = {
 function renderRules(context: CliContext): number {
   const rules = listRules();
   context.out(`MaintainerKit rules (${rules.length})\n\n`);
-  context.out("  ID            Severity  Applies to                    Title\n");
+
+  // Widths come from the data: a fixed padding silently misaligns whenever a rule applies to more
+  // subjects than the author expected.
+  const idWidth = Math.max(2, ...rules.map((rule) => rule.id.length));
+  const severityWidth = Math.max(8, ...rules.map((rule) => rule.defaultSeverity.length));
+  const appliesWidth = Math.max(10, ...rules.map((rule) => rule.appliesTo.join(", ").length));
+
+  context.out(
+    `  ${"ID".padEnd(idWidth)}  ${"Severity".padEnd(severityWidth)}  ${"Applies to".padEnd(appliesWidth)}  Title\n`,
+  );
   for (const rule of rules) {
     context.out(
-      `  ${rule.id.padEnd(13)} ${rule.defaultSeverity.padEnd(9)} ${rule.appliesTo.join(", ").padEnd(29)} ${rule.title}\n`,
+      `  ${rule.id.padEnd(idWidth)}  ${rule.defaultSeverity.padEnd(severityWidth)}  ${rule.appliesTo.join(", ").padEnd(appliesWidth)}  ${rule.title}\n`,
     );
   }
   context.out("\nRun `maintainerkit explain --rule MK-PR-001` for details.\n");
