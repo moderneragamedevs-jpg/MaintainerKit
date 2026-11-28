@@ -19,7 +19,7 @@
     "@maintainerkit/workflow-engine": "workspace:*"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.28.2"
   },
   "engines": {
     "node": ">=22.0.0"
